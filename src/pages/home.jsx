@@ -7,7 +7,8 @@ import Col from 'react-bootstrap/Col'
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
-import { ButtonIcon, Button, ComparisonIcon, ApplicationsIcon, NumberedListIcon, UserIcon } from 'evergreen-ui'
+import { ButtonIcon, Button, ComparisonIcon, ApplicationsIcon, NumberedListIcon, UserIcon } from 'evergreen-ui';
+import {FaUserGraduate} from 'react-icons/fa';
 import {NavLink, Redirect, Link } from "react-router-dom";
 
 import {Card, Divider, Space} from 'antd';
@@ -34,8 +35,9 @@ class Home extends React.Component{
             <Divider orientation="left">Learning content area</Divider>
             <Space size="middle">
                 <Link to="/time-periods"><Button iconBefore={ComparisonIcon} size="large">Manage time periods</Button></Link>
-                <Button iconBefore={ApplicationsIcon} size="large">Manage modules</Button>
-                <Button iconBefore={NumberedListIcon} size="large">Manage questions</Button>
+                <Link to="/grade"><Button iconBefore={FaUserGraduate} size="large">Manage grades</Button></Link>
+                <Link to="/modules"><Button iconBefore={ApplicationsIcon} size="large">Manage modules</Button></Link>
+                <Link to="/questions"><Button iconBefore={NumberedListIcon} size="large">Manage questions</Button></Link>
             </Space>
         </Container>
 

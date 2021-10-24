@@ -6,7 +6,8 @@ import './App.css';
 
 // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app";
-import {app, analytics} from "./utils/firebase";
+import {app, analytics, readData } from "./utils/firebase";
+import {listData} from "./utils/dataFirebase";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "firebase/auth";
 
@@ -24,6 +25,9 @@ import AboutUs from './pages/aboutus';
 import Navbar from './components/customnav';
 import SignInScreen from './pages/signinscreen';
 import TimePeriod from './pages/timeperiods';
+import Grade from './pages/manageGrade';
+import ManageModules from './pages/managemodules';
+import ManageQuestions from './pages/managequestions';
 
 const { Header, Content, Footer } = Layout;
 
@@ -35,38 +39,8 @@ const { Header, Content, Footer } = Layout;
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
-// createUserWithEmailAndPassword(auth, email, password)
-//   .then((userCredential) => {
-//     // Signed in 
-//     const user = userCredential.user;
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     // ..
-//   });
 
-// signInWithPopup(auth, provider)
-//   .then((result) => {
-//     // This gives you a Google Access Token. You can use it to access the Google API.
-//     const credential = GoogleAuthProvider.credentialFromResult(result);
-//     const token = credential.accessToken;
-//     // The signed-in user info.
-//     const user = result.user;
-//     console.log("user: ", user);
-//     console.log("Token: ", token);
-//     // ...
-//   }).catch((error) => {
-//     // Handle Errors here.
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     // The email of the user's account used.
-//     const email = error.email;
-//     // The AuthCredential type that was used.
-//     const credential = GoogleAuthProvider.credentialFromError(error);
-//     // ...
-//   });
+console.log(listData("grade-level"));
 
 export default function App() {
   return (<>
@@ -76,6 +50,15 @@ export default function App() {
         <Switch>
           <Route path="/time-periods">
             <TimePeriod/>
+          </Route>
+          <Route path="/grade">
+            <Grade/>
+          </Route>
+          <Route path="/modules">
+            <ManageModules/>
+          </Route>
+          <Route path="/questions">
+            <ManageQuestions/>
           </Route>
           <Route path="/aboutus">
             <AboutUs/>
