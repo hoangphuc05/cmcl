@@ -1,4 +1,5 @@
 import { collection, doc, addDoc, getFirestore, getDoc, getDocs, onSnapshot, query, where  } from "firebase/firestore"; 
+import _ from 'lodash';
 
 import { app } from "./firebase";
 
@@ -31,7 +32,7 @@ export const listData = async (collectionName) => {
 
 //write data to firebase
 export const writeData = async (collectionName, data) => {
-    await addDoc(collection(db, collectionName), data);
+    await addDoc(collection(db, collectionName), _.omitBy(data, _.isNil)); //omit null values before adding to firebase
 }
 
 //subscribe to firebase
