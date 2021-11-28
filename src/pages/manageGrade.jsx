@@ -1,9 +1,9 @@
 import React from "react";
 
-import {listData, subscribeChange, writeData, deleteData} from "../utils/dataFirebase";
+import {listData, subscribeChange, writeData, deleteData, updateData} from "../utils/dataFirebase";
 import Container from 'react-bootstrap/Container';
 
-import { Button} from 'evergreen-ui';
+import { Button, Popover, Menu} from 'evergreen-ui';
 import {Table , Space, Popconfirm, Modal} from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 // import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
@@ -67,11 +67,15 @@ class Grade extends React.Component {
 
     //hopefully this is a good idea
     columns = [
-        // {
-        //     title: 'Sort',
-        //     dataIndex: 'sort',
-        //     render: (text, record, index) => <DragHandle/>
-        // },
+        {
+            title: 'Index',
+            dataIndex: 'index',
+            key: 'index',
+            align: 'left', //left align
+            defaultSortOrder: 'ascend',
+            // sortOrder: 'ascend',
+            sorter: (a, b) => a.index - b.index,
+        },
         {
             title: 'Title',
             dataIndex: 'title',
@@ -87,10 +91,26 @@ class Grade extends React.Component {
             dataIndex: 'docId',
             key: 'docId',
             align: 'right',
-            render: (text, record) => (
+            render: (text, record, index) => (
                 <Space>
-                    {console.log(record.docId)}
-                    <Button>Edit</Button>
+                    <Popover
+                        content={({close}) => (
+                            <Menu>
+                                <Menu.Group>
+                                    <Menu.Item onSelect={() => {this.swapIndexUp(index); close();}}>Move up</Menu.Item>
+                                    <Menu.Item onSelect={() => {this.swapIndexDown(index); close();}}>Move down</Menu.Item>
+                                </Menu.Group>
+                                <Menu.Divider />
+                                <Menu.Group>
+                                    <Menu.Item>Edit</Menu.Item>
+                                    <Menu.Item>View modules</Menu.Item>
+                                </Menu.Group>
+                            </Menu>
+                        )
+                        }
+                    >                    
+                        <Button>Action</Button>
+                    </Popover>
                     <Button intent="danger" onClick={()=>{this.setState({
                         modalVisible: true,
                         modalGrade: record
@@ -99,6 +119,59 @@ class Grade extends React.Component {
             ),
         }
     ];
+
+    //swap two grade indexes
+    swapIndexUp = (index) => {
+
+        //exit if index is at top
+        if (index === 0) {
+            return;
+        }
+        const { gradeData } = this.state;
+        const newGradeData = gradeData.map(item => {
+            if (item.index === index) {
+                item.index = index - 1;
+                // update new data on firebase
+                updateData("grade-level", item.docId, item);
+                console.log(item);
+            } else if (item.index === index - 1) {
+                item.index = index;
+                // update new data on firebase
+                updateData("grade-level", item.docId, item);
+
+            }
+            return item;
+        });
+        this.setState({
+            gradeData: newGradeData,
+        });
+    }
+
+    //swap two grade indexes
+    swapIndexDown = (index) => {
+        //exit if index is at bottom
+        if (index === this.state.gradeData.length - 1) {
+            return;
+        }
+        const { gradeData } = this.state;
+        const newGradeData = gradeData.map(item => {
+            if (item.index === index) {
+                item.index = index + 1;
+
+                // update new data on firebase
+                updateData("grade-level", item.docId, item);
+            } else if (item.index === index + 1) {
+                item.index = index;
+
+                // update new data on firebase
+                updateData("grade-level", item.docId, item);
+            }
+            return item;
+        });
+        this.setState({
+            gradeData: newGradeData,
+        });
+    }
 
     componentDidMount() {
         listData("grade-level").then(allGrade => {
