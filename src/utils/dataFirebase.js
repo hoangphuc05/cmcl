@@ -1,4 +1,4 @@
-import { collection, doc, addDoc, getFirestore, getDoc, getDocs, onSnapshot, query, where  } from "firebase/firestore"; 
+import { collection, doc, addDoc, getFirestore, getDoc, getDocs, deleteDoc, onSnapshot, query, where  } from "firebase/firestore"; 
 import _ from 'lodash';
 
 import { app } from "./firebase";
@@ -35,8 +35,17 @@ export const writeData = async (collectionName, data) => {
     await addDoc(collection(db, collectionName), _.omitBy(data, _.isNil)); //omit null values before adding to firebase
 }
 
+//delete data from firebase
+export const deleteData = async (collectionName, docID) => {
+    await deleteDoc(doc(db, collectionName, docID));
+}
+
 //subscribe to firebase
 // listen to a collection and callback if data changes
 export const subscribeChange = (collectionName, callback) => {
     return onSnapshot(query(collection(db, collectionName)), (doc) =>callback(doc));
+}
+
+export const getRef = (collectionName) => {
+    return collection(db, collectionName);
 }

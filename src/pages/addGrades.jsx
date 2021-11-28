@@ -36,7 +36,7 @@ export const AddGrades = (props) => {
                 </Form.Item>
 
                 <Form.Item className="flex justify-end">
-                    <Button className="float-right" type="primary">Submit</Button>
+                    <Button className="float-right" type="primary">Add</Button>
                 </Form.Item>
             </Form>
         </Container>
