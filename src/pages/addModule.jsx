@@ -15,7 +15,7 @@ const formLayout = {
 const { Option } = Select;
 
 //react function component named addModule
-export const AddModule = () => {
+export const AddModule = (props) => {
     const [form] = Form.useForm();
     const [file, setFile] = React.useState(null);
     const [grades, setGrades] = React.useState([]);
@@ -42,7 +42,7 @@ export const AddModule = () => {
                 name="addModule"
                 onFinish={(values) => {
                     console.log(values);
-                    writeData("modules", values).then(() => {
+                    writeData(`/grade-level/${props.gradeID}/modules`, values).then(() => {
                         form.resetFields();
                     });
                 }}
