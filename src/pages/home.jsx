@@ -35,7 +35,7 @@ class Home extends React.Component{
             <Divider orientation="left">Learning content area</Divider>
             <Space size="middle">
                 <Link to="/time-periods"><Button iconBefore={ComparisonIcon} size="large">Manage time periods</Button></Link>
-                <Link to="/grade"><Button iconBefore={FaUserGraduate} size="large">Manage grades</Button></Link>
+                <Link to="/grades"><Button iconBefore={FaUserGraduate} size="large">Manage grades</Button></Link>
                 <Link to="/modules"><Button iconBefore={ApplicationsIcon} size="large">Manage modules</Button></Link>
                 <Link to="/questions"><Button iconBefore={NumberedListIcon} size="large">Manage questions</Button></Link>
             </Space>
