@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams  } from "react-router-dom";
 
 import {listData, subscribeChange} from "../utils/dataFirebase";
 import Container from 'react-bootstrap/Container';
@@ -35,18 +36,19 @@ const columns = [
     
 ];
 
-//react component named ManageModules
-class ManageModules extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: [],
-            loading: true,
-            addModuleVisibility: false,
-            unsubscribe: null,
-        };
-    }
-    columns = [
+
+
+//functional component named ManageModules
+//TODO: resubscribe when the colelction does not exist at the beginning
+const ManageModules = (props) => {
+    let { gradeID } = useParams();
+    const [data, setData] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [addModuleVisibility, setAddModuleVisibility] = React.useState(false);
+    const [unsubscribe, setUnsubscribe] = React.useState(null);
+
+    const columns = [
+        
         {
             title: 'Title',
             dataIndex: 'title',
@@ -80,50 +82,46 @@ class ManageModules extends React.Component {
         
     ];
 
-
-    componentDidMount() {
-        listData('modules').then((data) => {
-            this.setState({
-                data: data,
-                loading: false,
-            });
+    React.useEffect(() => {
+        listData(`grade-level/${gradeID}/modules`).then((data) => {
+            setLoading(false);
+            setData(data);
         });
 
-        this.setState({
-            unsibscribe: subscribeChange("modules", (snapshot) => {
-                let newModulesData = [];
-                // read new grade data and update state
-                snapshot.forEach(doc => {
-                    newModulesData.push(doc.data());
-                });
-                this.setState({
-                    data: newModulesData,
-                });
-            })
-        })
-    }
+        setUnsubscribe(subscribeChange('modules', (snapshot) => {
+            let newModulesData = [];
 
-    componentWillUnmount() {
-        if (this.state.unsubscribe)
-            this.state.unsubscribe();
-    }
+            // read new grade data and update state
+            snapshot.forEach(doc => {
+                newModulesData.push(doc.data());
+            });
+            setData(newModulesData);
+        }));
 
-    render() {
-        return (
-            <>
-            <Container>
-                <h1>Manage Modules</h1>
-                <Table columns={this.columns} dataSource={this.state.data} loading={this.state.loading}/>
-                {/* <Button appearance="primary" marginTop={16} onClick={() => this.props.history.push('/addmodule')}>Add Module</Button> */}
-                <div className="flex justify-end my-3">
-                    <Button className="" onClick={() => this.setState({addModuleVisibility: !this.state.addModuleVisibility})}>Add new module</Button>
-                </div>
-            </Container>
-            
-            {this.state.addModuleVisibility?<AddModule/>:<></>}
-            </>
-        );
-    }
+        return function cleanup(){
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        }
+    }, []);
+
+    return (
+        <>
+        <h1>{gradeID}</h1>
+        <Container>
+            <h1>Manage Modules</h1>
+            <Table columns={columns} dataSource={data} loading={loading}/>
+            {/* <Button appearance="primary" marginTop={16} onClick={() => this.props.history.push('/addmodule')}>Add Module</Button> */}
+            <div className="flex justify-end my-3">
+                <Button className="" onClick={() => setAddModuleVisibility(!addModuleVisibility)}>Add new module</Button>
+            </div>
+        </Container>
+        
+        {addModuleVisibility?<AddModule gradeID={gradeID}/>:<></>}
+        </>
+    );
 }
+
+
 
 export default ManageModules;
